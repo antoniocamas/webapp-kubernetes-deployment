@@ -1,8 +1,13 @@
 #!/bin/bash
 
-SPEC_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )/specs"
+THIS_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+SPEC_PATH="$THIS_PATH/specs"
 SPEC_FILES="step_1_volumes.yaml step_2_webapp_and_database.yaml step_3_ingress.yaml"
 OPERATIONS="create delete"
+HELM_CHART=$THIS_PATH/charts/webapp
+HELM_DEPLOYMENT_NAME="helm-deployed-webapp"
+MODES="specs helm"
+MODE="helm"
 
 usage()
 {
@@ -13,6 +18,7 @@ Options:
     -h/--help                           Show this message.
     -v                                  Be verbose (level 1)
     -o/--operation                      Choose between $OPERATIONS
+    -m/--mode			        Choose between $MODES
     -s/--show-status			Shows the status of the deployment
 EOF
 
@@ -21,7 +27,7 @@ EOF
 
 function parseArguments()
 {
-    OPTS=`getopt -o hvso: -l help,operation:,show-status -- "$@"`
+    OPTS=`getopt -o hvso:m: -l help,operation:,mode:,show-status -- "$@"`
 
     eval set -- "$OPTS"
 
@@ -38,6 +44,10 @@ function parseArguments()
 		then
 		    SPEC_FILES=$(reverse_array "${SPEC_FILES[@]}")
 		fi
+		shift; shift
+		;;
+	    -o | --mode)
+		MODE=$2
 		shift; shift
 		;;
 	    -v)
@@ -68,8 +78,14 @@ function parseArguments()
 	echo "Unknown operation. "
 	usage
     exit 1
-fi
+    fi
 
+    if [[ ! " ${MODES[@]} " =~ " $MODE " ]]
+    then
+	echo "Unknown mode. "
+	usage
+    exit 1
+    fi
 }
 
 function reverse_array ()
@@ -106,10 +122,26 @@ function execute_spec_files ()
     echo 
 }
 
+function execute_helm_chart ()
+{
+    if [[ $OPERATION == "create" ]]
+    then
+	helm install --name $HELM_DEPLOYMENT_NAME $HELM_CHART
+    else
+	helm $OPERATION $HELM_DEPLOYMENT_NAME --purge
+    fi
+}
+
 function show_deployment_status ()
 {
     [[ "$BE_VERBOSE" == "y" ]] && echo "kubectl get pods,deployments,services,pv,pvc"
     kubectl get pods,deployments,services,pv,pvc,ingress
+    if [[ "$MODE" == "helm" ]]
+    then
+	[[ "$BE_VERBOSE" == "y" ]] && echo "helm list"
+	echo
+	helm list
+    fi
 }
 
 #####################
@@ -117,10 +149,14 @@ function show_deployment_status ()
 #####################
 parseArguments $@
 
-
-
 create_hostPath
 add_domanin_to_hosts
-execute_spec_files
+if [[ "$MODE" == "specs" ]]
+then
+    execute_spec_files
+elif [[ "$MODE" == "helm" ]]
+then
+    execute_helm_chart
+fi
 show_deployment_status
 
