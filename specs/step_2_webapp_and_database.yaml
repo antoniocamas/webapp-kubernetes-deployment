@@ -2,21 +2,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: java-webapp-deployment
+  name: antoniocamas-java-webapp-deployment
 spec:
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      app: java-webapp
+      app: antoniocamas-java-webapp
   replicas: 2 # tells deployment to run N pods matching the template
   template: # create pods using pod definition in this template
     metadata:
       labels:
-        app: java-webapp
+        app: antoniocamas-java-webapp
     spec:
       containers:
-      - name: java-webapp
+      - name: antoniocamas-java-webapp
         image: codeurjc/java-webapp-bbdd:v2
         env:
         - name: MYSQL_ROOT_PASSWORD
@@ -29,37 +29,37 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: java-webapp
+  name: antoniocamas-java-webapp
   labels:
-    app: java-webapp
+    app: antoniocamas-java-webapp
 spec:
   ports:
     - port: 8080
       targetPort: 8080
       protocol: TCP
-      name: java-webapp-port
+      name: antoniocamas-java-webapp-port
   selector:
-    app: java-webapp
+    app: antoniocamas-java-webapp
   type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: db-deployment
+  name: antoniocamas-db-deployment
 spec:
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      app: db
+      app: antoniocamas-db
   replicas: 1 # tells deployment to run 1 pods matching the template
   template: # create pods using pod definition in this template
     metadata:
       labels:
-        app: db
+        app: antoniocamas-db
     spec:
       containers:
-      - name: db
+      - name: antoniocamas-db
         image: mysql:5.6
         env:
         - name: MYSQL_ROOT_PASSWORD
@@ -70,23 +70,23 @@ spec:
         - containerPort: 3306
         volumeMounts:
         - mountPath: /var/lib/mysql
-          name: db-storage
+          name: antoniocamas-db-storage
       volumes:
-      - name: db-storage
+      - name: antoniocamas-db-storage
         persistentVolumeClaim:
-          claimName: pvc-1g
+          claimName: antoniocamas-pvc-1g
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: db
   labels:
-    app: db
+    app: antoniocamas-db
 spec:
   ports:
     - port: 3306
       protocol: TCP
-      name: bbdd-port
+      name: antoniocamas-bbdd-port
   selector:
-    app: db
+    app: antoniocamas-db
   type: ClusterIP

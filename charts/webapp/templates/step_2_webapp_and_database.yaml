@@ -2,21 +2,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: java-webapp-deployment
+  name: {{ .Values.prefix }}java-webapp-deployment
 spec:
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      app: java-webapp
+      app: {{ .Values.prefix }}java-webapp
   replicas: {{ .Values.replicaCount }} 
   template: # create pods using pod definition in this template
     metadata:
       labels:
-        app: java-webapp
+        app: {{ .Values.prefix }}java-webapp
     spec:
       containers:
-      - name: java-webapp
+      - name: {{ .Values.prefix }}java-webapp
         image: codeurjc/java-webapp-bbdd:v2
         env:
         - name: MYSQL_ROOT_PASSWORD
@@ -29,37 +29,37 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: java-webapp
+  name: {{ .Values.prefix }}java-webapp
   labels:
-    app: java-webapp
+    app: {{ .Values.prefix }}java-webapp
 spec:
   ports:
     - port: {{ .Values.javawebappContainerPort }}
       targetPort: {{ .Values.javawebappContainerPort }}
       protocol: TCP
-      name: java-webapp-port
+      name: {{ .Values.prefix }}java-webapp-port
   selector:
-    app: java-webapp
+    app: {{ .Values.prefix }}java-webapp
   type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: db-deployment
+  name: {{ .Values.prefix }}db-deployment
 spec:
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      app: db
+      app: {{ .Values.prefix }}db
   replicas: 1 # tells deployment to run 1 pods matching the template
   template: # create pods using pod definition in this template
     metadata:
       labels:
-        app: db
+        app: {{ .Values.prefix }}db
     spec:
       containers:
-      - name: db
+      - name: {{ .Values.prefix }}db
         image: mysql:5.6
         env:
         - name: MYSQL_ROOT_PASSWORD
@@ -70,23 +70,23 @@ spec:
         - containerPort: 3306
         volumeMounts:
         - mountPath: /var/lib/mysql
-          name: db-storage
+          name: {{ .Values.prefix }}db-storage
       volumes:
-      - name: db-storage
+      - name: {{ .Values.prefix }}db-storage
         persistentVolumeClaim:
-          claimName: pvc-1g
+          claimName: {{ .Values.prefix }}pvc-1g
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: db
   labels:
-    app: db
+    app: {{ .Values.prefix }}db
 spec:
   ports:
     - port: 3306
       protocol: TCP
-      name: bbdd-port
+      name: {{ .Values.prefix }}bbdd-port
   selector:
-    app: db
+    app: {{ .Values.prefix }}db
   type: ClusterIP

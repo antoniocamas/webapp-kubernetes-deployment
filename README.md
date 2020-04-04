@@ -1,5 +1,9 @@
 # Deployment of a dockerized Web Application with Database in Kubernetes
 
+## GitHub
+
+https://github.com/antoniocamas/webapp-kubernetes-deployment
+
 ## Enviroment
 
 In this experimental deployment a minikube kubernetes cluster is used.
@@ -25,7 +29,7 @@ In this deployment we will use a replica set of 2 instances for the webapp.
 he databases will not be replicated.
 The database will be persistent in a hostPath location.
 
-The exposed url will be www.mywebdomain.com/webapp/ in the TCP port 80.
+The exposed url will be www.antoniocamaswebdomain.com/webapp/ in the TCP port 80.
 
 The deployment will be automatized ...
 
@@ -36,12 +40,15 @@ The deployment will be automatized ...
 
 Create a folder for the system and add an entry in the /etc/hosts for a domain
 > mkdir /mnt/data/antoniocamas
-> echo -e "$(minikube ip)\twww.mywebdomain.com" >> /etc/hosts
+> echo -e "$(minikube ip)\twww.antoniocamaswebdomain.com" >> /etc/hosts
 
 Deploy the web app with helm
 
 > cd webapp-kubernetes-deployment
-> helm install --name helm-deployed-webapp-antonio-camas charts/webapp
+> helm install --name antoniocamas-helm-deployed-webapp charts/webapp
+
+Delete deployment 
+> helm delete antoniocamas-helm-deployed-webapp --purge
 
 #### Scripted
 

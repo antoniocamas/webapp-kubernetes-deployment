@@ -1,7 +1,7 @@
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: 1g-volume
+  name: {{ .Values.prefix }}1g-volume
 spec:
   storageClassName: manual
   capacity:
@@ -14,7 +14,7 @@ spec:
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: pvc-1g
+  name: {{ .Values.prefix }}pvc-1g
 spec:
   storageClassName: manual
   accessModes:

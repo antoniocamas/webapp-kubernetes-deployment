@@ -3,10 +3,11 @@
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
+prefix: antoniocamas-
 persistentVolumePath: /mnt/data/antoniocamas
 mysqlRootPass: pass
 mysqlDatabase: test
 javawebappContainerPort: 8080
-webDomain: www.mywebdomain.com
-uriPath: /webapp
+webDomain: www.antoniocamaswebdomain.com
+uriPath: /webapp/
 

@@ -1,11 +1,14 @@
 #!/bin/bash
 
+DOMAIN="www.antoniocamaswebdomain.com"
+PERSISTENT_VOLUME_PATH=/mnt/data/antoniocamas
+
 THIS_PATH="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 SPEC_PATH="$THIS_PATH/specs"
 SPEC_FILES="step_1_volumes.yaml step_2_webapp_and_database.yaml step_3_ingress.yaml"
 OPERATIONS="create delete"
 HELM_CHART=$THIS_PATH/charts/webapp
-HELM_DEPLOYMENT_NAME="helm-deployed-webapp-antonio-camas"
+HELM_DEPLOYMENT_NAME="antoniocamas-helm-deployed-webapp"
 MODES="specs helm"
 MODE="helm"
 
@@ -96,19 +99,18 @@ function reverse_array ()
 
 function create_hostPath ()
 {
-    [[ ! -d /mnt/data/antoniocamas ]] && mkdir /mnt/data/antoniocamas
+    [[ ! -d "$PERSISTENT_VOLUME_PATH" ]] && mkdir $PERSISTENT_VOLUME_PATH
 }
 
 function add_domanin_to_hosts ()
 {
-    local domain="www.mywebdomain.com"
-    cat /etc/hosts | grep $domain
+    cat /etc/hosts | grep $DOMAIN
     if [[ $? -eq 0 ]]
     then
-	[[ $OPERATION == "delete" ]] && sed "/.*$domain$/d" -i /etc/hosts > /dev/null
+	[[ $OPERATION == "delete" ]] && sed "/.*${DOMAIN}$/d" -i /etc/hosts > /dev/null
 	return 0
     fi
-    echo -e "$(minikube ip)\t$domain" >> /etc/hosts
+    echo -e "$(minikube ip)\t${DOMAIN}" >> /etc/hosts
 }
 
 function execute_spec_files ()

@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: webapp-ingress
+  name: {{ .Values.prefix }}webapp-ingress
   annotations:
     kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/rewrite-target: "/"
@@ -12,5 +12,5 @@ spec:
       paths:
       - path: {{ .Values.uriPath }}
         backend:
-          serviceName: java-webapp
+          serviceName: {{ .Values.prefix }}java-webapp
           servicePort: {{ .Values.javawebappContainerPort }}
