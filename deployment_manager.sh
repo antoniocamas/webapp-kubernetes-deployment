@@ -5,7 +5,7 @@ SPEC_PATH="$THIS_PATH/specs"
 SPEC_FILES="step_1_volumes.yaml step_2_webapp_and_database.yaml step_3_ingress.yaml"
 OPERATIONS="create delete"
 HELM_CHART=$THIS_PATH/charts/webapp
-HELM_DEPLOYMENT_NAME="helm-deployed-webapp"
+HELM_DEPLOYMENT_NAME="helm-deployed-webapp-antonio-camas"
 MODES="specs helm"
 MODE="helm"
 
@@ -17,8 +17,8 @@ Options:
 
     -h/--help                           Show this message.
     -v                                  Be verbose (level 1)
-    -o/--operation                      Choose between $OPERATIONS
-    -m/--mode			        Choose between $MODES
+    -o/--operation                      Choose one of [$OPERATIONS]
+    -m/--mode			        Choose one of [$MODES]
     -s/--show-status			Shows the status of the deployment
 EOF
 
@@ -46,7 +46,7 @@ function parseArguments()
 		fi
 		shift; shift
 		;;
-	    -o | --mode)
+	    -m | --mode)
 		MODE=$2
 		shift; shift
 		;;
