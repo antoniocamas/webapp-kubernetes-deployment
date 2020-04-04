@@ -69,7 +69,7 @@ Delete deployment
 
 Create a folder for the system and add an entry in the /etc/hosts for a domain
 > mkdir /mnt/data/antoniocamas
-> echo -e "$(minikube ip)\twww.mywebdomain.com" >> /etc/hosts
+> echo -e "$(minikube ip)\twww.antoniocamaswebdomain.com" >> /etc/hosts
 
 Deploy the web app using the specs and kubectl
 
